@@ -1,0 +1,31 @@
+<div class="row" style="height:100%;width:100%;background:black;color:red">
+    <form name="form-builder" id="form" class="form-horizontal form-builder">
+            <table class="text-c table table-bordered table-striped" style="width:100%;color:white;align:center;border:solid 1px white">
+                <thead class="text-center" style="border:solid 1px white">
+                    <tr>
+                        <th class="column-goodsid " style="border:solid 1px white"> 序号 <span> </span> </th>
+                        <th class="column-goodsid "> 编号 <span> </span> </th>
+                        <th class="column-goods "> 商品名称<span> </span> </th>
+                        <th class="column-pinyin "> 拼音码<span> </span> </th>
+                        <th class="column-categoryid "> 分类<span> </span> </th>
+                        <th class="column-retail_price "> 零售价<span> </span> </th>
+                        <th class="column-staffid "> 操作员<span> </span> </th>
+                        <th class="column-create_time ">创建时间<span> </span> </th>
+                        <th class="column-right_button ">操作<span></span></th>
+                    </tr>
+                </thead>
+                <tbody style="border:solid 1px white">
+                    <tr class="" style="border:solid 1px white">
+                        <td class="" style="border:solid 1px white"> '{goodsid}'</td>
+                        <td class=""> '{goods.goods}'</td>
+                        <td class=""> '{goods.pinyin}'</td>
+                        <td class=""> '{goods.categoryid}'</td>
+                        <td class=""> '{goods.retail_price}'</td>
+                        <td class=""> '{goods.staffid}'</td>
+                        <td class=""> '{goods.create_time|date="Y-m-d H:i",###}'</td>
+                    </tr>
+                </tbody>
+            </table>
+            <input type='text' style="margin-top:500px;margin-left:120px" value="aba"/>
+    </form>
+</div>

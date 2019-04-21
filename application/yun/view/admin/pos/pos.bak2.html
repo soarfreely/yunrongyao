@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+        <meta charset="utf-8">
+
+        <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+        <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="__LIBS__/layer/layer.js"></script>
+        <!-- <script src="__MODULE_JS__/fun.js"></script> -->
+
+        <title>前台收款</title>
+
+        <style media="screen">
+            body{
+                width:100%;
+                overflow-x:hidden;
+                height:50%;
+                background:black
+            }
+            thead,tbody,th,td{
+                vertical-align: middle;
+                text-align: center;
+            }
+            table{
+                color:white;
+                table-layout:fixed;
+            }
+            th,td{
+                overflow: hidden;
+                /* text-overflow: hidden; */
+                /* text-overflow: ellipsis; */
+                white-space: nowrap;
+            }
+            tr{
+                height: 31px
+            }
+            #footer-input{
+              position:absolute;
+              /* display: block; */
+              /* margin-left: auto;
+              margin-right: auto; */
+              /* left:200px; */
+              top:85%;
+              /* bottom:150px; */
+              color:#176AF6;
+              /* text-align: center; */
+            }
+            #footer-info{
+              position:absolute;
+              /* right:100px; */
+              top:96%;
+              /* bottom:150px; */
+            }
+        </style>
+    </head>
+    <body style="background: black">
+        <div class="modal fade" id="loadingModal">
+            <div style="background: white;width: 400px;height:300px; z-index: 20000; position: absolute; text-align: center; left: 50%; top: 20%;margin-left:-200px;">
+                <div align="center" >
+                    <b>应付金额:</b>&nbsp;&nbsp;<input type="text" name="total" value="0" style="margin-top:50px" readonly disabled><br>
+                    <b>实付金额:</b>&nbsp;&nbsp;<input type="text" name="prepay"  style="margin-top:20px" ><br>
+                    <b>找零金额:</b>&nbsp;&nbsp;<input type="text" name="change" value="0" style="margin-top:20px" readonly disabled><br>
+                    <p style="margin-top:20px">
+                        <button id = "btn_pay" style="width: 220px" class="btn btn-danger btn-large" type="button">付款</button>
+                    </p>
+                </div>
+                <!-- <div class="progress progress-striped active" style="margin-bottom: 0;">
+                    <div class="progress-bar" style="width: 100%;"></div>
+                </div> -->
+                <!-- <h5 style="color: white">正在加载...</h5> -->
+            </div>
+        </div>
+        <div class="container">
+            <div class="row text-center ">
+                <form id="pos-form" class="form-inline" action="" method="post">
+                <!-- <form id="pos-form" class="form-inline" action="{:url('pos/pos/gather')}" method="post"> -->
+                    <!-- onsubmit="return false" -->
+                <!-- <form class="form-horizontal"> -->
+                  <div class="form-group">
+                    <table id = "pos-table" class="table table-condensed table-bordered">
+                        <thead class="">
+                            <tr class="">
+                                <th class="column-goodsid "> 序号 <span> </span> </th>
+                                <th class="column-goodsid "> 编号 <span> </span> </th>
+                                <th class="column-goods "> 商品名称<span> </span> </th>
+                                <th class="column-number" width ="100px">数量<span></span></th>
+                                <th class="column-pinyin "> 拼音码<span> </span> </th>
+                                <th class="column-categoryid "> 分类<span> </span> </th>
+                                <th class="column-retail_price "> 零售价<span> </span> </th>
+                                <th class="column-staffid "> 操作员<span> </span> </th>
+                                <th class="column-create_time ">时间<span> </span> </th>
+                            </tr>
+                        </thead>
+                        <tbody class="">
+
+                        </tbody>
+                    </table>
+                  </div>
+                    <div id="footer-input" class="row  center-block">
+                    <!-- <div id="footer-input" class="row" style="color:#176AF6 " data-spy="affix" data-offset-bottom="50"> -->
+                    <!-- <div class="row" style="background:white " data-spy="affix" data-offset-bottom="50"> -->
+                        <div class="form-group" style="margin-left: 100px">
+                            <label for="barcodename">条码/名称</label>
+                            <!-- onkeydown="if(event.keyCode === 13){return false;} -->
+                             <!-- data-target="#myModal -->
+                            <input type="text" onkeydown="if(event.keyCode === 13){return false;}" class="form-control" id="barcodename" placeholder="条码/名称" data-toggle="modal"">
+                            <!--
+                                <input type="text" onkeydown="return false" class="form-control" id="barcodename" placeholder="条码/名称" data-toggle="modal"">
+                            -->
+                        </div>
+                        <!-- <div class="form-group">
+                            <label for="number">数量</label>
+                            <input type="text" class="form-control" id="number" value = "1" placeholder="数量">
+                        </div> -->
+                        <div class="form-group">
+                            <label for="retail_price">单价￥</label>
+                            <input type="text" class="form-control" id="retail_price" placeholder="单价" value="" readonly disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="amount">金额￥</label>
+                            <input type="text" class="form-control" id="amount" placeholder="金额" value="" readonly disabled>
+                        </div>
+
+                        <input id = "submit" type="button" class="btn btn-danger"  style="margin-left: 120px;font-weight: 700" value="收款" />
+                        <!-- <button id = "submit" type = "submit" class="btn btn-danger"  style="margin-left: 50px;font-weight: 700">收款</button> -->
+                    </div>
+                  <!-- <div class="form-group" style="background:white" data-spy="affix" data-offset-bottom="50">
+                    <div class="col-sm-offset-2 col-sm-10">
+                      <button type="submit" class="btn btn-default"">Sign in</button>
+                    </div>
+                  </div> -->
+                </form>
+            </div>
+        </div>
+        <table id="layer-table"></table>
+<script type="text/javascript">
+$(document).ready(function(){
+    //使点击空白处遮罩层不会消失
+    $("#loadingModal").modal({backdrop:'static'});
+    //按Tab键遮罩层不会消失 ，默认值为true
+    $("#loadingModal").modal({keyboard:false});
+    //隐藏
+    $("#loadingModal").modal('hide');
+    // 点击收款后,付款信息
+    $("#submit").on("click", function(){
+        //显示
+        $("#loadingModal").modal('show');
+        $.ajax({
+            type:'post',
+            datatype : 'json',//服务端返回的数据类型
+            url : "{:url('pos/pos/total')}",//接收数据的映射接口
+            data:{prepay:0},
+            success:function(data){
+                console.log(data);
+                var total = data.amount;
+                $("#loadingModal > div input[name='total']").val(total);
+
+                document.onkeydown=function(event){
+                    // 修改付款金额后,按下回车键
+                    var e = event || window.event || arguments.callee.caller.arguments[0];
+                    if(e && e.keyCode==27){ // 按 Esc //要做的事情
+                    }
+                    if(e && e.keyCode==13){ // 按 Enter //要做的事情
+
+                        var prepay = $("#loadingModal > div input[name='prepay']").val();
+                        console.log('prepay')
+                        if(prepay){
+                            // 获得焦点
+                            $("#btn_pay").focus();
+                            // 改变按钮颜色
+                            if($("#btn_pay").hasClass('btn-danger')){
+                                $("#btn_pay").removeClass('btn-danger').addClass('btn-success');
+                            }
+
+                            $.post("{:url('pos/pos/total')}",{prepay:prepay},function(data){
+                                console.log(data);
+                                // var total = data.amount;
+                                // var prepay = data.prepay;
+                                var change = data.change;
+                                $("#loadingModal > div input[name='change']").val(change);
+
+                                var total_input = $("#loadingModal > div input[name='total']").val();
+                                var prepay_input = $("#loadingModal > div input[name='prepay']").val();
+                                var change_input = $("#loadingModal > div input[name='change']").val();
+
+                                $("#btn_pay").on('click',function(){
+
+                                    console.log('收款完成');
+                                    document.onkeydown=function(event){
+                                        // 修改付款金额后,按下回车键
+                                        var e = event || window.event || arguments.callee.caller.arguments[0];
+                                        if(e && e.keyCode==13){ // 按 Enter //要做的事情
+                                            $.post("{:url('pos/pos/pay')}",{prepay:prepay_input,change:change_input},function(response){
+                                                // 根据相应数据,做出相应操作 ① 隐藏遮罩,并初始化,遮罩个字段值;②清空购买的商品信息,Cookie
+                                                // #####################################################
+                                            });
+                                        }
+                                    }
+                                });
+                            });
+                        }
+                    }
+                }
+            }
+        })
+    })
+})
+</script>
+<script type="text/javascript">
+
+// $(document).ready(function(){
+//     // 点击收款后,付款信息
+//     $("#submit0").on("click", function(){
+//         $.ajax({
+//             type:'post',
+//             datatype : 'json',//服务端返回的数据类型
+//             url : "{:url('pos/pos/total')}",//接收数据的映射接口
+//             data:{prepay:0},
+//             success:function(data){
+//                 var total = 101.111;
+//                 // var html = '<div align="center" style="margin-top:5%;"> 应付金额:&nbsp;&nbsp;<input type="text" name="total" value="'+ total +'" style="margin-top:20px" readonly disabled><br> 实付金额:&nbsp;&nbsp;<input type="text" name="prepay" value="10" style="margin-top:20px" ><br> 找零金额:&nbsp;&nbsp;<input type="text" name="" value="10" style="margin-top:20px" readonly disabled> </div>';
+//                 layer.open({
+//                     type: 1
+//                     ,title: false //不显示标题栏
+//                     ,closeBtn: false
+//                     ,area: ['400px','300px']
+//                     ,shade: 0.8
+//                     ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
+//                     ,resize: false
+//                     ,btn: ['关闭']
+//                     ,btnAlign: 'c'
+//                     ,moveType: 1 //拖拽模式，0或者1
+//                     ,content: html
+//                     // 关闭弹出层第一种方式
+//                     // ,content: '<div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">内容<br>内容</div>'
+//                     // ,yes: function(index,layero){
+//                         // layer.close(index)
+//                     // 关闭弹出层第一种方式
+//
+//                     // 关闭弹出层第二种方式
+//                     ,success: function(layero,index){
+//                         // var prepay_input = (layero).find("div >input[name='prepay']")[0];
+//                         // console.log(prepay_input)
+//                         // $(layero).on('onclick',function(){
+//                         //     console.log('a');
+//                         // })
+//                         // console.log(prepay_input.val())
+//                         // 点击第一个按钮(,btn: ['', '关闭'])后,触发的事件
+//                         var btn = layero.find('.layui-layer-btn');
+//                         btn.find('.layui-layer-btn0').click(function(){
+//                             layer.close(index)
+//                         });
+//                     // 关闭弹出层第二种方式
+//                         // btn.find('.layui-layer-btn0').attr({
+//                         //     // 第一个按钮
+//                         // href: 'http://www.layui.com/'
+//                         // ,target: '_blank'
+//                         // });
+//                         // btn.find('.layui-layer-btn1').attr({
+//                         //     // 第二个按钮
+//                         // href: 'http://www.layui.com/'
+//                         // ,target: '_blank'
+//                         // });
+//                     }
+//                 });
+//             }
+//         })
+//     })
+// })
+// // #########################################################
+//
+// $(document).ready(function(){
+//     $("#submit1").on("click", function(){
+//         $.ajax({
+//             type:'post',
+//             datatype : 'json',//服务端返回的数据类型
+//             url : "{:url('pos/pos/pay')}",//接收数据的映射接口
+//             success:function(data){
+//                 console.log(data)
+//                 // layer.msg(data.msg);
+//                 layer.open({
+//                     type: 1
+//                     ,title: false //不显示标题栏
+//                     ,closeBtn: false
+//                     ,area: ['400px','300px']
+//                     ,shade: 0.8
+//                     ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
+//                     ,resize: false
+//                     ,btn: ['关闭']
+//                     ,btnAlign: 'c'
+//                     ,moveType: 1 //拖拽模式，0或者1
+//                     ,content: '<div style="background-color: #393D49; color: #fff;" class=""><h3 style="height:210px;line-height:210px;" class="text-center">付款完成</h3></div>'
+//                     // 关闭弹出层第一种方式
+//                     // ,content: '<div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">内容<br>内容</div>'
+//                     // ,yes: function(index,layero){
+//                         // layer.close(index)
+//                     // 关闭弹出层第一种方式
+//
+//                     // 关闭弹出层第二种方式
+//                     ,success: function(layero,index){
+//                         // 点击第一个按钮(,btn: ['', '关闭'])后,触发的事件
+//                         var btn = layero.find('.layui-layer-btn');
+//                         btn.find('.layui-layer-btn0').click(function(){
+//                             layer.close(index)
+//                         });
+//                     // 关闭弹出层第二种方式
+//                         // btn.find('.layui-layer-btn0').attr({
+//                         //     // 第一个按钮
+//                         // href: 'http://www.layui.com/'
+//                         // ,target: '_blank'
+//                         // });
+//                         // btn.find('.layui-layer-btn1').attr({
+//                         //     // 第二个按钮
+//                         // href: 'http://www.layui.com/'
+//                         // ,target: '_blank'
+//                         // });
+//                     }
+//                 });
+//             },
+//             error:function(error){
+//                 console.log(error)
+//             }
+//         })
+//     });
+//
+//     // 点击收款按钮,确认支付成功后,提交表单
+//     // $("#submit").click(function(){
+//     //     var rows = $("#pos-table tbody").children("tr");
+//     //     var datum_obj = {};
+//     //     var datum = "";
+//     //     var datum_array_data = Array();
+//     //     // 汇总的信息,订单总金额,会员信息及收款员信息等等
+//     //     var datum_array_detail = Array();
+//     //     // 销售商品的详细信息
+//     //
+//     //     for(var i = 0;i < rows.length -1;i++){
+//     //         datum = "{";
+//     //         var tds = rows[i].children;
+//     //         for(var j = 0;j< tds.length;j++){
+//     //             var field = $(tds[j]).attr('data-field');
+//     //             datum_obj.field = $(tds[j]).text();
+//     //             datum += '"' +$(tds[j]).attr('data-field') + '":"' + $(tds[j]).text() + '",';
+//     //         }
+//     //         datum = datum.substr(0,datum.length -1);
+//     //         datum += '},';
+//     //         datum = datum.substr(0,datum.length -1);
+//     //         datum_obj = $.parseJSON(datum);
+//     //
+//     //         datum_array_detail.push(datum_obj);
+//     //     }
+//     //     var amount = "{$Think.cookie.amount}";
+//     //     datum_array_data.push({amount:amount});
+//     //     // console.log(datum_array_data);
+//     //     if(1){
+//     //     // if(datum_array_detail){
+//     //         $.ajax({
+//     //             type:'post',
+//     //             datatype : 'json',//服务端返回的数据类型
+//     //             url : "{:url('pos/pos/pay')}",//接收数据的映射接口
+//     //             // data : {"data":datum_array_data,"detail":datum_array_detail},
+//     //             success:function(data){
+//     //                 console.log(data)
+//     //             },
+//     //             error:function(error){
+//     //                 console.log(error)
+//     //             }
+//     //         })
+//     //     }
+//     //
+//         // alert('付款成功')
+//     //     // var a = checkPay();
+//     //     // alert(a)
+//     //     // alert('付款成功')
+//     //     // if(checkPay() == 'success'){
+//     //     //     alert('付款成功')
+//     //     //     console.log('ok')
+//     //     //  付款成功后,保存销售数据
+//     //     //     $("#pos-form").attr("action","{:url('pos/pos/gather')}");
+//     //     //     // console.log($("#pos-form").attr("action"))
+//     //     //     // $("#pos-form").attr("action","${basePath}/public/sjkf/shorturl/uploadApkOk.jspx");
+//     //     //     $("#pos-form").submit();
+//     //     // }
+//     // });
+//     });
+</script>
+<!-- <script type="text/javascript">
+$("button").click(function(){
+
+    document.onkeydown=function(event){
+        var e = event || window.event || arguments.callee.caller.arguments[0];
+        if(e && e.keyCode==13){
+            console.log('回车键')
+        }
+        console.log(e.keyCode)
+    }
+
+});
+
+</script> -->
+<script type="text/javascript">
+// 页面加载完成后,条码输入框自动获取焦点
+    $(document).ready(function(){
+      $("#barcodename").focus();
+    });
+</script>
+        <script type="text/javascript"> // 回车触发模态框
+            document.onkeydown=function(event){
+                var e = event || window.event || arguments.callee.caller.arguments[0];
+                if(e && e.keyCode==27){ // 按 Esc //要做的事情
+                }
+                if(e && e.keyCode==113){ // 按 F2 //要做的事情
+                }
+                if(e && e.keyCode==13 && $(':focus').attr('id') == 'barcodename'){ // enter 键 //要做的事情 //
+                    // alert('回车');
+                    // <!-- 开始 弹出层 -->
+                    // 获取条码或名称
+                    var barcodename = $('#barcodename').val();
+                    if(barcodename){
+                        // 数量的输入框获取光标
+                        // $("#number").focus();
+                        $("#barcodename").blur();
+                        // 令 条码输入框 失去焦点
+                        layer.open({
+                            // type:1, // 弹出层
+                            type:2, //iframe
+                            // shade:0.3,
+                            content: "{:url('pos/pos/layer')}?barcodename=" + barcodename,
+                            area: ['800px', '300px'],
+                            title:'商品信息',
+                            // 20180422
+                            success: function(layero, index){
+                              var body = layer.getChildFrame('body', index);
+                              var iframeWin = window[layero.find('iframe')[0]['name']];
+                              //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+                              // console.log(body.html()) //得到iframe页的body内容
+
+                              var tab = body.find('#pos-layer-table tbody');
+
+                                tab.on('dblclick','tr',function(){
+                                    if($(this).hasClass('selected')){
+                                        $(this).removeClass('selected');
+                                    }
+                                    else{
+                                        tab.removeClass('selected');
+                                        $($(tab) > 'tr.selected').removeClass('selected');
+                                        $(this).addClass('selected');
+                                    }
+                                    var goodsid = $(this).children('td:first').text();
+
+                                    // var trSelected = $('#pos-layer-table tbody tr.selected');
+                                    var trSelected = body.find('#pos-layer-table tbody tr.selected');
+                                    if(trSelected){
+                                        $.each(trSelected,function(index,val){
+                                            $(val).removeClass('selected');
+                                        });
+                                    }
+                                  layer.close(index);
+                                  // 关闭弹出层
+                                  //
+                                  //prompt层
+                                layer.prompt({
+                                    formType: 0,
+                                    value: '1',
+                                    title: '请输入值数量',
+                                    area: ['800px', '350px'], //自定义文本域宽高
+                                    yes: function(index, layero){
+                                       // alert(layero.find(".layui-layer-input").val());
+                                       var number = layero.find(".layui-layer-input").val();
+                                       if(! number){
+                                           number = 1;
+                                       }
+                                       // 确定数量之后,将选中商品添加至,销售列表
+                                       if(goodsid){
+                                          $.post("{:url('pos/pos/pos')}",{goodsid:goodsid,number:number},function(data){
+                                              // var content = data;
+                                              // console.log(data)
+                                              $('#pos-table > tbody').html(data);
+                                              // $('#retail_price').val(data.);
+                                              // $(data).insertBefore('#pos-table > tbody > tr:last')
+                                          });
+
+
+                                          //?????????????????????
+                                          // var c = $("#pos-table > tbody").children("tr");
+                                          // var rowNum = c.length -1;
+                                          //
+                                          // console.log($("#pos-table > tbody").children('tr').children('td'))
+                                          // console.log($("#pos-table > tbody >tr")[1])
+                                          // console.log($("#pos-table > tbody >tr")[rowNum].children[3])
+                                          // console.log($("#pos-table > tbody >tr")[rowNum].children[2])
+                                          // console.log($("#pos-table > tbody >tr")[rowNum].children[1])
+                                          // console.log(c);
+                                          //????????????????????????????
+                                       }
+
+                                       // alert(goodsid);
+                                       // alert(barcodename);
+                                       layer.close(index);
+                                    }
+                                });
+                              });
+                            }
+                        });
+                        // <!-- 结束 弹出层 -->
+                    }
+                }
+            };
+        </script>
+
+
+        <div id="footer-info" class="row" style="color:rgb(245, 222, 228);left:40%">
+        <!-- <div id="footer-info" class="row" style="color:rgb(245, 222, 228);" data-spy="affix" data-offset-bottom="10"> -->
+                <div>
+                    门店 <span>门店名称</span>
+                    收款员 <span>张三</span>
+                <span id ="date" class="pull-right" style="color:rgb(245, 222, 228);margin-left: 350px;" > </span>
+            </div>
+        </div>
+    </body>
+<script type="text/javascript">
+window.onload=function(){
+    setInterval(function(){
+    var date=new Date();
+    var year=date.getFullYear(); //获取当前年份
+    var mon=date.getMonth()+1; //获取当前月份
+    var da=date.getDate(); //获取当前日
+    var day=date.getDay(); //获取当前星期几
+    var h=date.getHours(); //获取小时
+    var m=date.getMinutes(); //获取分钟
+    var s=date.getSeconds(); //获取秒
+    var d = $('#date');
+    d.text('当前时间:'+year+'年'+mon+'月'+da+'日'+'  星期'+day+' '+h+'时'+m+'分'+s +'秒' + '      ');
+    },1000)
+}
+// 自定义,封装,弹层函数
+function layerOpen(area,html)
+{
+    layer.open({
+        type: 1
+        ,title: false //不显示标题栏
+        ,closeBtn: false
+        ,area: area
+        ,shade: 0.8
+        ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
+        ,resize: false
+        ,btn: ['关闭']
+        ,btnAlign: 'c'
+        ,moveType: 1 //拖拽模式，0或者1
+        ,content: html
+        // 关闭弹出层第一种方式
+        // ,content: '<div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">内容<br>内容</div>'
+        // ,yes: function(index,layero){
+            // layer.close(index)
+        // 关闭弹出层第一种方式
+
+        // 关闭弹出层第二种方式
+        ,success: function(layero,index){
+            var prepay_input = (layero).find("div >input[name='prepay']")[0];
+            console.log(prepay_input)
+            $(prepay_input).on('onclick',function(){
+                console.log('a');
+            })
+            // console.log(prepay_input.val())
+            // 点击第一个按钮(,btn: ['', '关闭'])后,触发的事件
+            var btn = layero.find('.layui-layer-btn');
+            btn.find('.layui-layer-btn0').click(function(){
+                layer.close(index)
+            });
+        // 关闭弹出层第二种方式
+            // btn.find('.layui-layer-btn0').attr({
+            //     // 第一个按钮
+            // href: 'http://www.layui.com/'
+            // ,target: '_blank'
+            // });
+            // btn.find('.layui-layer-btn1').attr({
+            //     // 第二个按钮
+            // href: 'http://www.layui.com/'
+            // ,target: '_blank'
+            // });
+        }
+    });
+}
+</script>
+</html>

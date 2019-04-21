@@ -1,0 +1,50 @@
+<style >
+    thead,tbody,th,td{
+        vertical-align: middle;
+        text-align: center;
+    }
+    table{
+        color:black;
+        table-layout:fixed;
+    }
+    th,td{
+        overflow: hidden;
+        /* text-overflow: hidden; */
+        /* text-overflow: ellipsis; */
+        white-space: nowrap;
+    }
+
+</style>
+<link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<!-- <table id = "pos-layer-table" class="table table-condensed table-bordered "> -->
+<table id = "pos-layer-table" class="table table-condensed table-bordered table-striped table-hover">
+    <thead class="">
+        <tr class="">
+            <th class="column-goodsid "> 编号 <span> </span> </th>
+            <th class="column-goods "> 名称 <span> </span> </th>
+            <th class="column-pinyin "> 拼音码<span> </span> </th>
+            <th class="column-categoryid "> 分类<span> </span> </th>
+            <th class="column-retail_price "> 零售价<span> </span> </th>
+        </tr>
+    </thead>
+    <tbody class="">
+        {volist name = "goodsInfo" id = "goods" key="k"}
+                {if condition="$k == 1"}
+                    <tr class="seleted">
+                {else /}
+                    <tr class="">
+                {/if}
+
+                <td class="column-{$goods.goodsid}"> {$goods.goodsid}</td>
+                <td class="column-goodsid "> {$goods.goods}</td>
+                <td class="column-goodsid "> {$goods.pinyin}</td>
+                <td class="column-goodsid "> {$goods.categoryid}</td>
+                <td class="column-goodsid "> {$goods.retail_price}</td>
+            </tr>
+        {/volist}
+    </tbody>
+</table>

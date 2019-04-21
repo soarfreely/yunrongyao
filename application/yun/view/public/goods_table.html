@@ -1,0 +1,53 @@
+<!-- 商品列表，table 部分    -->
+    <table class="table table-builder table-hover table-bordered table-striped js-table-checkable">
+        <thead>
+            <tr>
+                <th class="column-goodsid "> ID <span> </span> </th>
+                <th class="column-goods"> 商品名称<span> </span> </th>
+                <th class="column-barcode"> 条码<span> </span> </th>
+                <th class="column-specs "> 规格<span> </span> </th>
+                <th class="column-categoryid "> 分类<span> </span> </th>
+                <th class="column-last "> 采购价<span> </span> </th>
+                <th class="column-retail "> 零售价<span> </span> </th>
+                <th class="column-area ">产地<span> </span> </th>
+                <th class="column-right_button ">操作<span></span></th>
+            </tr>
+        </thead>
+{empty name="goodsList"}
+{else /}
+        <tbody>
+            {volist name = "goodsList" id = "goods"}
+            <tr class="">
+                <td class=""> {$goods.goodsid}</td>
+                <td class=""> {$goods.goods}</td>
+                <td class=""> {$goods.barcode}</td>
+                <td class=""> {$goods.specs}</td>
+                <td class=""> {$goods.categoryid}</td>
+                <td class=""> {$goods.retail}</td>
+                <td class=""> {$goods.last}</td>
+                <td class=""> {$goods.area}</td>
+                <td class="">
+                    <div class="btn-group">
+                        <a title="" 
+                        icon="glyphicon glyphicon-list-alt" 
+                        class="btn btn-xs btn-default" href="/pos/public/admin.php/pos/goods/detail/goodsid/{$goods.goodsid}.html" tag="detail" data-toggle="tooltip" data-original-title="详情">
+                        <i class="glyphicon glyphicon-list-alt"></i>
+                        </a>
+                                                            
+                        <!-- 弹窗打开(1.0.4+)1.0.4版本开始，支持弹窗打开连接，添加class为pop即可 -->
+
+                        <a title="" icon="fa fa-pencil" 
+                        class="btn btn-xs btn-default " href="/pos/public/admin.php/pos/goods/edit/goodsid/{$goods.goodsid}.html" target="_self" _tag="edit" data-toggle="tooltip" data-original-title="编辑">
+                            <i class="fa fa-pencil"></i>
+                        </a>
+
+                        <a title="" icon="fa fa-times" class="btn btn-xs btn-default ajax-get confirm" href="/pos/public/admin.php/pos/goods/remove/goodsid/{$goods.goodsid}.html" _tag="remove" data-toggle="tooltip" data-original-title="删除">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {/volist}
+        </tbody>
+{/empty}
+    </table>

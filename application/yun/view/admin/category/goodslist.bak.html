@@ -1,0 +1,253 @@
+{extend name="$_admin_base_layout" /}
+
+{block name="style"}
+<link href="__LIBS__/jstree/themes/default/style.min.css" rel="stylesheet" />
+{/block}
+
+{block name="content"}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="block">
+                <div class="block-header bg-gray-lighter">
+                    <ul class="block-options">
+                        <li>
+                            <button type="button" data-toggle="block-option" data-action="fullscreen_toggle"></button>
+                        </li>
+                        <li>
+                            <button type="button" data-toggle="block-option" data-action="refresh_toggle" data-action-mode="demo"><i class="si si-refresh"></i></button>
+                        </li>
+                        <li>
+                            <button type="button" data-toggle="block-option" data-action="content_toggle"></button>
+                        </li>
+                        <li>
+                            <button type="button" data-toggle="block-option" data-action="close"><i class="si si-close"></i></button>
+                        </li>
+                    </ul>
+                    <h3 class="block-title">商品管理</h3>
+                </div>
+                <!-- <form name="form-builder" id="form" class="form-horizontal form-builder"> -->
+                    <div class="block-content tab-content">
+                        <div class="tab-pane active fade auth-node in" >
+                            <!-- id="tab2" -->
+                            <div class="row data-table-toolbar">
+                                <div class="col-sm-12">
+                                    <div class="toolbar-btn-action">
+                                        <a title="新增" icon="fa fa-plus-circle" class="btn btn-primary" href="/simple/public/admin.php/pos/goods/add.html"><i class="fa fa-plus-circle"></i> 新增</a>
+                                            <!-- <i class="fa fa-plus-circle"></i> -->
+                                             <!-- 新增 -->
+                                        </a>
+     
+
+                                        <!-- <button title="全选" type="button" class="btn btn-info" id="check-all"><i class="fa fa-check-circle-o"></i> 全选</button> -->
+                                        <!-- <button title="取消全选" type="button" class="btn btn-danger" id="uncheck-all"><i class="fa fa-ban"></i> 取消全选</button>
+                                        <button title="展开所有节点" type="button" class="btn btn-success" id="expand-all"><i class="fa fa-plus"></i> 展开所有节点</button>
+                                        <button title="收起所有节点" type="button" class="btn btn-warning" id="collapse-all"><i class="fa fa-minus"></i> 收起所有节点</button>
+                                        <span class="form-inline">
+                                        <input class="form-control" id="search-auth" onkeydown="if(event.keyCode === 13){return false;}" type="text" value="" placeholder="输入关键字搜索">
+                                     </span> -->
+                                    </div>
+                                </div>
+                            </div>
+                            <div class='row'>
+                                <!-- 20180414 -->
+                                <div id="jstree" class="push col-md-3">{$category|default=''}</div>
+                                <div id="jstree-goods" class="col-md-9">
+                                    {empty name="goodsList"}
+                                    {else /}
+                                        <table class="table table-builder table-hover table-bordered table-striped js-table-checkable">
+                                            <thead>
+                                                <tr>
+                                                   <!--  <th class="text-center" style="min-width: 70px;padding: 10px;">
+                                                        <label class="css-input css-checkbox css-checkbox-primary remove-margin-t remove-margin-b">
+                                                            <input id="check-all" type="checkbox"><span></span>
+                                                        </label>
+                                                    </th> -->
+                                                    <th class="column-goodsid "> ID <span> </span> </th>
+                                                    <th class="column-goods "> 商品名称<span> </span> </th>
+                                                    <th class="column-specificateions "> 规格<span> </span> </th>
+                                                    <th class="column-categoryid "> 分类<span> </span> </th>
+                                                    <th class="column-purchase_price "> 采购价<span> </span> </th>
+                                                    <th class="column-retail_price "> 零售价<span> </span> </th>
+                                                    <th class="column-producting_area ">产地<span> </span> </th>
+                                                    <th class="column-right_button ">操作<span></span></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {volist name = "goodsList" id = "goods"}
+                                                <tr class="">
+                                                   <!--  <td class="text-center">
+                                                        <label class="css-input css-checkbox css-checkbox-primary">
+                                                            <input class="ids" name="ids[]" value="1" type="checkbox"><span></span>
+                                                        </label>
+                                                    </td> -->
+                                                    <td class=""> {$goods.goodsid}</td>
+                                                    <td class=""> {$goods.goods}</td>
+                                                    <td class=""> {$goods.specificateions}</td>
+                                                    <td class=""> {$goods.categoryid}</td>
+                                                    <td class=""> {$goods.retail_price}</td>
+                                                    <td class=""> {$goods.purchase_price}</td>
+                                                    <td class=""> {$goods.producting_area}</td>
+                                                    <!-- <td class=""> {$goods.create_time|date="Y-m-d H:i",###}</td> -->
+                                                    <td class="">
+                                                        <div class="btn-group">
+                                                            <a title="" 
+                                                            icon="glyphicon glyphicon-list-alt" 
+                                                            class="btn btn-xs btn-default ajax-get " href="/simple/public/admin.php/pos/goods/remove/detail/goodsids/{$goods.goodsid}.html" _tag="detail" data-toggle="tooltip" data-original-title="详情"><i class="glyphicon glyphicon-list-alt"></i></a>
+                                                            
+
+                                                            <!-- 弹窗打开(1.0.4+)
+1.0.4版本开始，支持弹窗打开连接，添加class为pop即可 -->
+
+
+                                                            <a title="" icon="fa fa-pencil" class="btn btn-xs btn-default " href="/simple/public/admin.php/pos/goods/edit/goodsid/{$goods.goodsid}.html" target="_self" _tag="edit" data-toggle="tooltip" data-original-title="编辑"><i class="fa fa-pencil"></i></a>
+
+                                                            <a title="" icon="fa fa-times" class="btn btn-xs btn-default ajax-get confirm" href="/simple/public/admin.php/pos/goods/remove/goodsid/{$goods.goodsid}.html" _tag="remove" data-toggle="tooltip" data-original-title="删除"><i class="fa fa-times"></i></a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                {/volist}
+                                            </tbody>
+                                        </table>
+                                    {/empty}
+                                </div>
+                            </div>
+                            <!-- 分页开始 -->
+                           <!--  <div class="data-table-toolbar">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="pagination-info pull-right">
+                                            <div>
+                                                <input type="text" class="form-control input-sm go-page" id="go-page" name="page" value="1">
+                                                <input type="text" class="form-control input-sm nums" id="list-rows" name="list_rows" value="20">
+                                                / <strong>1</strong> 页，共 <strong>1</strong> 条数据，每页显示数量
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> -->
+                            <div class="data-table-toolbar">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <ul class="pagination">
+                                        <li class="disabled"><span>«</span></li>
+                                        <li class="active"><span>1</span></li>
+                                        <li>
+                                            <a href="/simple/public/admin.php/pos/goods/index.html?page=2&amp;list_rows=2">2</a>
+                                        </li>
+                                        <li>
+                                            <a href="/simple/public/admin.php/admin/config/index/group/base.html?group=base&amp;page=3&amp;list_rows=2">3</a>
+                                        </li>
+                                        <li>
+                                            <a href="/simple/public/admin.php/admin/config/index/group/base.html?group=base&amp;page=4&amp;list_rows=2">4</a>
+                                        </li>
+                                        <li>
+                                            <a href="/simple/public/admin.php/admin/config/index/group/base.html?group=base&amp;page=5&amp;list_rows=2">5</a>
+                                        </li>
+                                        <li>
+                                            <a href="/simple/public/admin.php/admin/config/index/group/base.html?group=base&amp;page=2&amp;list_rows=2">»</a>
+                                        </li>
+                                    </ul>                                    
+                                    <div class="pagination-info pull-right">
+                                        <div>
+                                            <input type="text" class="form-control input-sm go-page" id="go-page" name="page" value="1">
+                                            <input type="text" class="form-control input-sm nums" id="list-rows" name="list_rows" value="2">
+                                            / <strong>5</strong> 页，共 <strong>10</strong> 条数据，每页显示数量
+                                        </div>
+                                    </div>
+                                </div>
+                            <!-- 分页结束 -->
+                        </div>
+                    </div>
+                    </div>
+                <!-- </form> -->
+            </div>
+        </div>
+    </div>
+{/block}
+
+{block name="script"}
+<script src="__LIBS__/jstree/jstree.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $('#jstree').jstree({
+            plugins: ["search"],
+            // plugins: ["checkbox", "search"],
+            // 20180404注释 取消 checkbox
+            "checkbox" : {
+                "keep_selected_style" : false,
+                "three_state" : false,
+                "cascade" : 'down+up'
+            },
+            "search" : {
+                'show_only_matches' : true,
+                'show_only_matches_children' : true
+            }
+        });
+        // =================================
+        $("#jstree").on("click", function(e){
+            // console.log($(e.target));
+            var elem = $(e.target).parent('li')[0];
+            var id = $(elem).attr('id');
+            if(id != undefined) {
+                console.log(id)
+                $.post('{:url('pos/goods/index')}', { "categoryid": id},
+                function(data){
+                    $('#jstree-goods').html(data);
+                    // console.log(data);
+                });//, "text"
+            }
+
+        });
+        // =================================
+        var to = false;
+        $('#search-auth').keyup(function () {
+            if(to) { clearTimeout(to); }
+            to = setTimeout(function () {
+                var v = $('#search-auth').val();
+                $('#jstree').jstree(true).search(v);
+            }, 250);
+        });
+        // 全选
+        $('#check-all').click(function () {
+            $('#jstree').jstree(true).check_all();
+        });
+        // 取消全选
+        $('#uncheck-all').click(function () {
+            $('#jstree').jstree(true).uncheck_all();
+        });
+        // 展开所有
+        $('#expand-all').click(function () {
+            $('#jstree').jstree(true).open_all();
+        });
+        // 收起所有
+        $('#collapse-all').click(function () {
+            $('#jstree').jstree(true).close_all();
+        });
+
+        // 提交表单
+        $('#form').submit(function () {
+            var form_data = $(this).serialize();
+            var auth_node = $('#jstree').jstree(true).get_checked();
+            if (auth_node.length) {
+                form_data += '&menu_auth='+auth_node.join(',');
+            }
+            $.post("{:url('')}", form_data).success(function (res) {
+                if (res.code) {
+                    Dolphin.notify(res.msg, 'success');
+                    setTimeout(function () {
+                        location.href = res.url;
+                    }, 1500);
+                } else {
+                    Dolphin.notify(res.msg, 'danger');
+                }
+            }).fail(function () {
+                Dolphin.notify('服务器发生错误~', 'danger');
+            });
+            return false;
+        });
+    });
+</script>
+<script>
+
+</script>
+{/block}

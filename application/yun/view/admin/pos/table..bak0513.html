@@ -1,0 +1,44 @@
+{volist name ="goodsInfo" id="goods"}
+<tr class="">
+    <td class="" data-field="goodsid">{$goods.goodsid}</td>
+    <td class="" data-field="goods">{$goods.goods}</td>
+    <td class="" data-field="pinyin">{$goods.goodsid}</td>
+    <td class="" data-field="goodsid1">{$goods.goodsid}</td>
+    <td class="" data-field="goodsid2">{$goods.goodsid}</td>
+    <td class="" data-field="goodsid3">{$goods.goodsid}</td>
+    <td class="" data-field="goodsid4">{$goods.goodsid}</td>
+    <td class="" data-field="goodsid5">{$goods.goodsid}</td>
+    <td class="" data-field="goodsid6">{$goods.goodsid}</td>
+</tr>
+{/volist}
+
+<script type="text/javascript"> // 回车触发模态框
+    // document.onkeydown=function(event){
+    //     var e = event || window.event || arguments.callee.caller.arguments[0];
+    //     if(e && e.keyCode==27){ // 按 Esc //要做的事情
+    //     }
+    //     if(e && e.keyCode==113){ // 按 F2 //要做的事情
+    //     }
+    //     if(e && e.keyCode==13){ // enter 键 //要做的事情 //
+    //         // alert('回车');
+    //         // <!-- 开始 弹出层 -->
+    //
+    //         $.post(
+    //             "{:url('pos/pos/layer')}",
+    //             { name: "John", time: "2pm" },
+    //             function (response){
+    //                 // console.log(response)
+    //                 layer.open({
+    //                     type:1,
+    //                     content: response,
+    //                     area: ['800px', '300px']
+    //                 });
+    //             }
+    //         );
+    //
+    //
+    //         // layer.msg('', {time: 3});
+    //         // <!-- 结束 弹出层 -->
+    //     }
+    // };
+</script>

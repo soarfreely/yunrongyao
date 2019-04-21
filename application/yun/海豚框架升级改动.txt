@@ -1,0 +1,23 @@
+1.admin_module 表
+ INSERT INTO mini_admin_module VALUES(
+ '3', 'pos', '云融耀', 'fa fa-fw fa-user', '用户模块，DolphinPHP自带模块', 'pos', 'http://www.dolphinphp.com', '', '', '1.0.0', 'pos.dolphinphp.module', '1', '1468204902', '1468204902', '100', '1');
+
+
+增加 一个系统模块，手动添加；
+2.在后台节点管理，增加一个 顶级节点。
+3.用户登录验证，user模型autoLogin方法，登录凭证信息：
+       $auth = array(
+            'uid'             => $user->id,
+            'group'           => $user->group,
+            'role'            => $user->role,
+            'role_name'       => Db::name('admin_role')->where('id', $user->role)->value('name'),
+            'avatar'          => $user->avatar,
+            'username'        => $user->username,
+            'nickname'        => $user->nickname,
+            'companyid'       => $user->companyid,
+            'founder'         => $user->founder,
+            'last_login_time' => $user->last_login_time,
+            'last_login_ip'   => get_client_ip(1),
+        );
+4.utl 工具类
+    gather 收款类；alipayment 支付宝支付类

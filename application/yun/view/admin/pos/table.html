@@ -1,0 +1,28 @@
+{notempty name="collect->order_memory"}
+    {volist name ="collect->order_memory[$posid]" id="goods"}
+    <tr class="">
+       <td class="" data-field="sort">{$key + 1}</td>
+        <td class="" data-field="goodsid">{$goods->goodsid}</td>
+        <td class="" data-field="goods">{$goods->goods}</td>
+        <td class="" data-field="number">{$goods->number}</td>
+        <td class="" data-field="retail">{$goods->retail}</td>
+        <td class="" data-field="area">{$goods->area}</td>
+    </tr>
+    {/volist}
+{/notempty}
+<tr class="">
+    <td class=""></td>
+    <td class=""></td>
+    <td class=""></td>
+    <td class=""></td>
+    <td class=""></td>
+    <td class=""></td>
+</tr>
+<script type="text/javascript">
+    var retail = "{$last_price}";
+    var amount = "{$amount}";
+    $('#retail').val(retail);
+    $('#amount').val(amount);
+    
+    // $('#barcodename').val("");
+</script>

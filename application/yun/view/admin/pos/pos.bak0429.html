@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+        <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="__LIBS__/layer/layer.js"></script>
+
+        <title>前台收款</title>
+
+        <style media="screen">
+            body{
+                width:100%;
+                overflow-x:hidden;
+                height:50%;
+                background:black
+            }
+            thead,tbody,th,td{
+                vertical-align: middle;
+                text-align: center;
+            }
+            table{
+                color:white;
+                table-layout:fixed;
+            }
+            th,td{
+                overflow: hidden;
+                /* text-overflow: hidden; */
+                /* text-overflow: ellipsis; */
+                white-space: nowrap;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="row text-center">
+                <form class="form-inline">
+                <!-- <form class="form-horizontal"> -->
+                  <div class="form-group">
+                    <table class="table table-condensed table-bordered">
+                        <thead class="">
+                            <tr class="">
+                                <th class="column-goodsid "> 序号 <span> </span> </th>
+                                <th class="column-goodsid "> 编号 <span> </span> </th>
+                                <th class="column-goods "> 商品名称<span> </span> </th>
+                                <th class="column-pinyin "> 拼音码<span> </span> </th>
+                                <th class="column-categoryid "> 分类<span> </span> </th>
+                                <th class="column-retail_price "> 零售价<span> </span> </th>
+                                <th class="column-staffid "> 操作员<span> </span> </th>
+                                <th class="column-create_time ">时间<span> </span> </th>
+                                <th class="column-oper" width ="100px">操作<span></span></th>
+                            </tr>
+                        </thead>
+                        <tbody class="">
+                            <tr class="">
+                                <td class=""> '{goodsid}'</td>
+                                <td class=""> '{goods.goods}'</td>
+                                <td class=""> '{goods.pinyin}'</td>
+                                <td class=""> '{goods.categoryid}'</td>
+                                <td class=""> '{goods.retail_price}'</td>
+                                <td class=""> '{goods.staffid}'</td>
+                                <td class=""> '{goods.create_time}'</td>
+                                <td class=""> '{goods.staffid}'</td>
+                                <td class=""> '{@@@@@@@@@@@goods.create_time|}##############'</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                  </div>
+                    <div class="row" style="color:#176AF6 " data-spy="affix" data-offset-bottom="50">
+                    <!-- <div class="row" style="background:white " data-spy="affix" data-offset-bottom="50"> -->
+                        <div class="form-group">
+                            <label for="barcodename">条码/名称</label>
+                            <!-- onkeydown="if(event.keyCode === 13){return false;} -->
+                             <!-- data-target="#myModal -->
+                            <input type="text" onkeydown="" class="form-control" id="barcodename" placeholder="条码/名称" data-toggle="modal"">
+                            <!-- <input type="text" onkeydown="return false" class="form-control" id="barcodename" placeholder="条码/名称" data-toggle="modal""> -->
+                        </div>
+                        <div class="form-group">
+                            <label for="number">数量</label>
+                            <input type="email" class="form-control" id="number" placeholder="数量">
+                        </div>
+                        <div class="form-group">
+                            <label for="retail_price">单价￥</label>
+                            <input type="email" class="form-control" id="retail_price" placeholder="单价" readonly disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="amount">金额￥</label>
+                            <input type="email" class="form-control" id="amount" placeholder="金额" readonly disabled>
+                        </div>
+                        <!-- <button type="submit" class="btn btn-default">Send invitation</button> -->
+                    </div>
+                  <!-- <div class="form-group" style="background:white" data-spy="affix" data-offset-bottom="50">
+                    <div class="col-sm-offset-2 col-sm-10">
+                      <button type="submit" class="btn btn-default"">Sign in</button>
+                    </div>
+                  </div> -->
+                </form>
+            </div>
+        </div>
+        <table id="layer-table"></table>
+
+        <script type="text/javascript"> // 回车触发模态框
+            document.onkeydown=function(event){
+                var e = event || window.event || arguments.callee.caller.arguments[0];
+                if(e && e.keyCode==27){ // 按 Esc //要做的事情
+                }
+                if(e && e.keyCode==113){ // 按 F2 //要做的事情
+                }
+                if(e && e.keyCode==13){ // enter 键 //要做的事情 //
+                    // alert('回车');
+                    // <!-- 开始 弹出层 -->
+
+                    // 获取条码或名称
+                    var barcodename = $('#barcodename').val();
+                    if(barcodename){
+                        $.post("{:url('pos/pos/layer')}",{barcodename:barcodename},function(data){
+                            console.log(data)
+                        },"json");
+                    }
+
+                    layer.open({
+                        type:2,
+                        // shade:0.3,
+                        content: ["{:url('pos/pos/layer')}", 'yes'],
+                        area: ['800px', '300px'],
+                        title:'商品信息',
+                        // 20180422
+                        success: function(layero, index){
+                          var body = layer.getChildFrame('body', index);
+                          var iframeWin = window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+                          // console.log(body.html()) //得到iframe页的body内容
+                          var tab = body.find('#pos-layer-table  td:first');
+                          console.log(tab.text());
+                              tab.on('click',function(){
+                                  console.log('点击')
+                                  alert($(this).text());
+                              });
+                          console.log();
+                          // body.find('input').val('Hi，我是从父页来的')
+                        },
+                        // 20180422
+                        btn: ['确定', '取消'],
+                            // yes: function(index, layero){
+                            //     //按钮【按钮一】的回调
+                            //     console.log("确定")
+                            //     console.log($('#pos-layer-table > tbody > tr > td:first'))
+                            //     $("#pos-layer-table td").on('click',function(){
+                            //         console.log('点击')
+                            //         alert($(this).text());
+                            //
+                            //     });
+                            // },
+                            btn2: function(index, layero){
+                              //按钮【按钮二】的回调
+                              console.log("取消")
+                              //return false 开启该代码可禁止点击该按钮关闭
+                            }
+                            ,cancel: function(){
+                              //右上角关闭回调
+                              // return false
+                              //开启该代码可禁止点击该按钮关闭
+                            }
+                    });
+                    // layer.msg('', {time: 3});
+                    // <!-- 结束 弹出层 -->
+                }
+            };
+        </script>
+
+
+        <div class="row" style="color:rgb(245, 222, 228);" data-spy="affix" data-offset-bottom="10">
+            <div class="text-center">
+                门店 <span>门店名称</span>
+                收款员 <span>张三</span>
+
+                <span class="pull-right" style="color:rgb(245, 222, 228);" >时间 2018年04月20日 16时16分16秒</span>
+            </div>
+        </div>
+    </body>
+</html>

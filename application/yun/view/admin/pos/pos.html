@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+        <meta charset="utf-8">
+
+        <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+        <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="__LIBS__/layer/layer.js"></script>
+        <!-- <script src="__MODULE_JS__/fun.js"></script> -->
+        <script>
+            $(document).ready(function(){
+                var screen_height = $(window).height();
+                $('.container').css('height',screen_height * 0.85);
+            })
+
+
+            toFixed = function(s)
+            {
+                return (parseInt(this * Math.pow( 10, s ) + 0.5)/ Math.pow( 10, s )).toString();
+            }
+
+        </script>
+
+        <title>前台收款</title>
+
+        <style>
+        /*<style media="screen">*/
+             .container{
+                width:100%;
+                /*height:70%;*/
+                /*overflow-x:hidden;*/
+                overflow-y:auto;
+                /*overflow-y:scroll; */
+                background:black;
+            }
+            body{
+                width:100%;
+                overflow-x:hidden;
+                /*height:300px;*/
+                background:black
+            }
+            thead,tbody,th,td{
+                vertical-align: middle;
+                text-align: center;
+            }
+            table{
+                color:white;
+                table-layout:fixed;
+            }
+            th,td{
+                overflow: hidden;
+                 text-overflow: hidden;
+                /* text-overflow: ellipsis; */
+                white-space: nowrap;
+            }
+            tr{
+                height: 31px
+            }
+        </style>
+    </head>
+    <body onload="">
+        <div class="modal fade" id="loadingModal" >
+           <!-- 模态框 应付 实付金额-->
+        </div>
+
+        <div class="container" s>
+            <div class="row text-center ">
+                <form id="pos-form" class="form-inline" action="" method="post">
+                  <div class="form-group">
+                    <table  id = "pos-table" class="table table-condensed table-bordered">
+                        <thead class="">
+                            <tr class="">
+                                <th style="width: 50px" class="column-goodsid "> 序号 <span> </span> </th>
+                                <th class="column-goodsid "> 编号 <span> </span> </th>
+                                <th class="column-goods "> 商品名称<span> </span> </th>
+                                <th class="column-number" width ="100px">数量<span></span></th>
+                                <th class="column-retail "> 零售价<span> </span> </th>
+                                <th class="column-area "> 产地<span> </span> </th>
+
+                            </tr>
+                        </thead>
+                        <tbody class="" >
+                        {notempty name="collect->order_memory"}
+                            {volist name ="collect->order_memory[$posid]" id="goods"}
+                            <tr class="">
+                                <td class="" data-field="sort">{$key + 1}</td>
+                                <td class="" data-field="goodsid">{$goods->goodsid}</td>
+                                <td class="" data-field="goods">{$goods->goods}</td>
+                                <td class="" data-field="number">{$goods->number}</td>
+                                <td class="" data-field="retail">{$goods->retail}</td>
+                                <td class="" data-field="area">{$goods->area}</td>
+                            </tr>
+                            {/volist}
+                        {/notempty}
+                            <tr class="">
+                                <td class=""></td>
+                                <td class=""></td>
+                                <td class=""></td>
+                                <td class=""></td>
+                                <td class=""></td>
+                                <td class=""></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                  </div>
+                    <!-- ==================== -->
+                </form>
+            </div>
+        </div>
+        <!-- <table id="layer-table"></table> -->
+
+        <footer class="navbar navbar-default navbar-fixed-bottom" style="background-color: black">
+            <div class="row  center-block">
+                <div class="form-inline" style="color:#176AF6;">
+                        <div class="form-group" style="margin-left: 200px">
+                            <label for="barcodename">条码/名称</label>
+                            <input type="text" onkeydown="if(event.keyCode === 13){return false;}" class="form-control" id="barcodename" placeholder="条码/名称" data-toggle="modal"">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="retail">单价￥</label>
+                            {empty name = "collect->last_price"}
+                            <input type="text" class="form-control" id="retail" placeholder="单价" value="0.00" readonly disabled>
+                            {else /}
+                            <input type="text" class="form-control" id="retail" placeholder="单价" value="{$collect->last_price}" readonly disabled>
+                            {/empty}
+                        </div>
+                        <!-- 可以增加 已付金额 -->
+                        <div class="form-group">
+                            <label for="amount">金额￥</label>
+                            {empty name = "collect->amount"}
+                            <input type="text" class="form-control" id="amount" placeholder="金额" value="0.00" readonly disabled>
+                            {else /}
+                            <input type="text" class="form-control" id="amount" placeholder="金额" value="{$collect->amount}" readonly disabled>
+                            {/empty}
+                        </div>
+
+                        <input id = "submit" type="button" class="btn btn-danger"  style="margin-left: 120px;font-weight: 700" value="收款" />
+                    </div>
+                <div class="form-group" style="color:rgb(245, 222, 228);">
+                    门店 <span>门店名称</span>
+                    收款员 <span>张三</span>
+                <span id ="date" class="pull-right" style="color:rgb(245, 222, 228);"> </span>
+                </div>
+            </div>
+        </footer>
+    </body>
+
+<script type="text/javascript">
+
+function load(){
+  $("#div").style.display="none";
+}
+
+// ① 点击收款按钮后，模态框
+$(document).ready(function(){
+    //使点击空白处遮罩层不会消失
+    $("#loadingModal").modal({backdrop:'static'});
+    // //按Tab键遮罩层不会消失 ，默认值为true
+    $("#loadingModal").modal({keyboard:false});
+    // 点击收款后,付款信息
+    //隐藏
+    $("#loadingModal").modal('hide');
+
+    $("#submit").on("click", function(){
+        var amount = $("#amount").val();
+        var orderStatus = "<?php echo $collect->order_memory ? 'yes' : 'no';?>";
+        if('no' == orderStatus){
+            // 订单为空,未输入商品,直接点击 收款 按钮
+            console.log(orderStatus)
+            return;
+        }
+        // var amount00 = "<?php echo $collect->amount ? $collect->amount : 0;?>";
+        console.log(Math.ceil(amount));
+        if(! amount || isNaN(Number(amount)) || amount.length < 1 || amount <= 0){
+            console.log('ok')
+            layer.msg('商品金额不正确', {time: 1000, icon:2});
+            return;
+        }
+
+
+        var modal_html = " <div id = \"div\" style=\"background: white;width: 400px;height:300px; z-index: 20000; position: absolute; text-align: center; left: 50%; top: 20%;margin-left:-200px;\"><div align=\"center\"><b>应付金额:</b>&nbsp;&nbsp;<input type=\"text\" name=\"total\" value=\" " +"<?php echo $collect->amount ? $collect->amount : '0.00';?> "+ " \" style=\"margin-top:50px\" readonly disabled><br><b>实付金额:</b>&nbsp;&nbsp;<input type=\"text\" id=\"idprepay\" name=\"prepay\"  style=\"margin-top:20px\" ><br><b>找零金额:</b>&nbsp;&nbsp;<input type=\"text\" name=\"change\" value=\"0.00\" style=\"margin-top:20px\" readonly disabled><br><p style=\"margin-top:20px\"><button id = \"btn_pay\" style=\"width: 242px\" class=\"btn btn-danger btn-large\" type=\"button\">付款</button> </p></div></div>";
+
+        //显示
+        $("#loadingModal").modal('show');
+        $("#loadingModal").html(modal_html);
+
+        $("#loadingModal > div input[name='total']").val(amount);
+        // 获得焦点
+        // $("#idprepay").focus();
+        // console.log(document.getElementById("idprepay"))
+        // document.getElementById("idprepay").focus()
+        $("#loadingModal > div input[name='prepay']").focus();
+
+        // javascript:document.getElementById("idprepay").focus();
+
+        document.onkeydown=function(event){
+            // 修改付款金额后,按下回车键
+            var e = event || window.event || arguments.callee.caller.arguments[0];
+            if(e && e.keyCode==27){ // 按 Esc //要做的事情
+                // $("#loadingModal").modal('hide');
+                window.location.reload();
+            }
+            if(e && e.keyCode==13 || e.keyCode== 9){ // 按 Enter //要做的事情
+                // 金额验证
+                var data = checkMoney();
+                console.log(data)
+                console.log('1313');
+
+                // 点击 付款 按钮
+                if(! $.isEmptyObject(data)){
+                    $("#btn_pay").focus(function(){
+                        console.log('焦点')
+                        paymentButten(data.prepay,data.change);
+                    });
+                    // $("#btn_pay").on('click',function(){
+                        // paymentButten(data.prepay,data.change);
+                    // })
+                }
+                console.log(data);
+            }
+            if(e && e.keyCode == 114){
+                // 支付宝,扫码付
+                // 隐藏遮罩
+                $("#loadingModal").modal('hide');
+                // alert('114');
+                layerPrompt();
+            }
+            if(e && e.keyCode == 115){
+                // 微信
+                alert(115)
+            }
+        }
+        $('#btn_pay').mousedown(function(e){
+            // alert(e.which) // 1 = 鼠标左键 left; 2 = 鼠标中键; 3 = 鼠标右键
+            // return false;//阻止链接跳转
+            if(e.which == 1){
+                // flag = 'click';
+                // submitPayment(flag);
+                // 金额验证
+                var data = checkMoney();
+                if(! $.isEmptyObject(data)){
+                    paymentButten(data.prepay,data.change);
+                }
+                // console.log(data);
+
+            }
+        })
+        // console.log(flag);
+    })
+})
+// ②验证 应付金额 实付金额
+function checkMoney()
+{
+    var prepay = $("#loadingModal > div input[name='prepay']").val();
+    var total_input = $("#loadingModal > div input[name='total']").val();
+
+    // alert(prepay)
+    // console.log(prepay)
+    prepay = Number(prepay);
+    total_input = Number(total_input);
+
+    if(isNaN(prepay) || isNaN(total_input)){
+        // 不是数字
+        layer.msg('金额输入非法', {time: 1000, icon:2});
+        return {};
+    }
+
+    if(prepay < total_input){
+        layer.msg('金额输入不正确', {time: 1000, icon:2});
+        return '';
+    }
+
+    if(total_input > 0 && prepay > 0 ){
+        var change = (prepay - total_input).toFixed(1);
+        $("#loadingModal > div input[name='change']").val(change);
+    }
+    else{
+        layer.msg('支付金额有误', {time: 1000, icon:2});
+        return {};
+    }
+
+    $("#loadingModal > div input[name='change']").val(change);
+
+    var change_input = $("#loadingModal > div input[name='change']").val();
+    if(change_input >= 100){
+        // 找零大于等于100
+        layer.msg('找零金额不能大于100', {time: 1000, icon:2});
+        return {};
+    }
+
+    // 获得焦点
+    $("#btn_pay").focus();
+    // 改变按钮颜色
+    if($("#btn_pay").hasClass('btn-danger')){
+        $("#btn_pay").removeClass('btn-danger').addClass('btn-success');
+    }
+
+    var data = {prepay:prepay,change:change_input}
+    return data;
+}
+// ②付款按钮
+function paymentButten(prepay_input,change_input)
+{
+    $.post("{:url('pos/pos/pay')}",{prepay:prepay_input,change:change_input},function(response){
+        // 根据相应数据,做出相应操作 ① 隐藏遮罩,并初始化,遮罩个字段值;②清空购买的商品信息
+        console.log(response)
+        if(response.code == 1){
+            // 隐藏遮罩
+            $("#loadingModal").modal('hide');
+            layer.msg('付款完成', {time: 5000, icon:6});
+            window.location.reload();
+            console.log(response)
+        }
+        else{
+            console.log('err');
+        }
+    });
+}
+function layerPrompt()
+{
+    //prompt层
+    var pay_code = '';
+    // layer.prompt({title: '输入付款码，并确认', formType: 3}, function(pay_code, index){
+    //   layer.close(index);
+    //   // layer.prompt({title: '随便写点啥，并确认', formType: 2}, function(text, index){
+    //   //   layer.close(index);
+    //   //   layer.msg('演示完毕！您的口令：'+ pay_code +'<br>您最后写下了：'+text);
+    //   // });
+    //
+    //   alibarcodepay(pay_code)
+      // console.log(pay_code)
+    // });
+    layer.prompt({title: '输入付款码，并确认！', formType: 3,
+        "success":function(){
+            $("input .layui-layer-input").on('keydown',function(e){
+                if (e.which == 13) {
+                    pay_code = $.trim($(this).val());
+                    if(pay_code){
+                        console.log(pay_code)
+                        alibarcodepay(pay_code)
+                        // alert('回车');
+                        layer.close(1);
+                    }
+                    else{
+                        $(this).focus()
+                    }
+                }
+            });
+        }},
+        function(pay_code, index){
+            console.log(index);
+            if(pay_code){
+                alibarcodepay(pay_code)
+                layer.close(index);
+            }
+            else{
+                $(this).focus()
+            }
+        });
+}
+// 支付宝扫码付
+function alibarcodepay(pay_code)
+{
+    // alert(pay_code);
+    console.log(pay_code)
+    // var pay_code = $('#pay_code').val();
+    $.post("{:url('pos/pos/aliBarcodePay')}",{auto_code:pay_code},function(response){
+        console.log(response)
+        if(0 === response['code']){
+            // 自定义错误
+            layer.msg(response['msg'], {time: 5000, icon:1});
+        }
+        else if("10003" == response['code'] || ("10000" == response['code'] && 'Success' == response['msg'])){
+            console.log(response)
+            var trade_no = response['trade_no'];
+            $.post("{:url('pos/pos/query')}",{trade_no:trade_no},function(resp){
+                console.log(resp);
+                if("TRADE_SUCCESS" == resp['trade_status']){
+                    // 交易成功 保存流水
+                    $.post("{:url('pos/retail/add')}");
+                    layer.msg('支付成功!!!', {time: 5000, icon:1});
+                    location.reload();
+                }
+                else if("WAIT_BUYER_PAY" == resp['trade_status']){
+                    // 等待用户确认支付
+                    layer.msg('等待用户确认支付!!!', {time: 40000, icon:1});
+                }
+                else
+                {
+                    // 异常
+                    layer.msg('异常!!!', {time: 5000, icon:2});
+                }
+            })
+            // layer.msg('等待用户确认支付!!!', {time: 60000, icon:1});
+            // 等待用户支付,付款待确认
+            // 需要定时调用订单支付状态查询;调用统一收单线下交易查询接口
+            timeQuery(trade_no);
+        }
+        else{
+            // 付款失败
+            layer.msg('支付异常,请重试!', {time: 5000, icon:2});
+        }
+    })
+}
+
+// 定时查询;定时器
+function timeQuery(trade_no1)
+{
+    var trade_no = trade_no1;
+    console.log(trade_no);
+    var num = 0;
+    var t1 = setInterval(function(){
+        num += 1;
+        if(num > 9){
+            clearInterval(t1)
+        }
+        // console.log(trade_no)
+        $.post("{:url('pos/pos/query')}",{trade_no:trade_no},function(resp){
+            console.log(resp);
+            if("TRADE_SUCCESS" == resp['trade_status']){
+                // 交易成功 保存流水
+                $.post("{:url('pos/retail/add')}");
+                clearInterval(t1);
+                layer.msg('支付成功!!!', {time: 5000, icon:1});
+                location.reload();
+            }
+            else if("WAIT_BUYER_PAY" == resp['trade_status']){
+                // 等待用户确认支付
+                layer.msg('等待用户确认支付!!!', {time: 40000, icon:1});
+            }
+            else
+            {
+                // 异常
+                layer.msg('异常!!!', {time: 3000, icon:2});
+            }
+        })
+    },5000);
+}
+function queryOrder(trade_no)
+{
+    $.post("{:url('pos/pos/query')}",{trade_no:trade_no},function(resp){
+        return resp;
+    })
+}
+// 微信扫码付
+function wxbarcodepay()
+{
+
+}
+</script>
+
+
+<script type="text/javascript">
+// 页面加载完成后,条码输入框自动获取焦点
+    $(document).ready(function(){
+      $("#barcodename").focus();
+    });
+</script>
+
+<!-- 弹出层 -->
+<!-- 输入条码或是商品拼音码后，的弹出层 -->
+<script type="text/javascript"> // 回车触发模态框
+    document.onkeydown=function(event){
+        var e = event || window.event || arguments.callee.caller.arguments[0];
+        if(e && e.keyCode==27){ // 按 Esc //要做的事情
+        }
+        if(e && e.keyCode==113){ // 按 F2 //要做的事情
+        }
+        if(e && e.keyCode==13 && $(':focus').attr('id') == 'barcodename'){ // enter 键 //要做的事情 //
+            // alert('回车');
+            // <!-- 开始 弹出层 -->
+            // 获取条码或名称
+            var barcodename = $('#barcodename').val();
+            if(barcodename){
+                // 数量的输入框获取光标
+                // $("#number").focus();
+                $("#barcodename").blur();
+                // 令 条码输入框 失去焦点
+                layer.open({
+                    // type:1, // 弹出层
+                    type:2, //iframe
+                    // shade:0.3,
+                    content: "{:url('pos/pos/layer')}?barcodename=" + barcodename,
+                    area: ['800px', '300px'],
+                    title:'商品信息',
+                    // 20180422
+                    success: function(layero, index){
+                      var body = layer.getChildFrame('body', index);
+                      var iframeWin = window[layero.find('iframe')[0]['name']];
+                      //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+                      // console.log(body.html()) //得到iframe页的body内容
+
+                      var tab = body.find('#pos-layer-table tbody');
+
+                        tab.on('dblclick','tr',function(){
+                            if($(this).hasClass('selected')){
+                                $(this).removeClass('selected');
+                            }
+                            else{
+                                tab.removeClass('selected');
+                                $($(tab) > 'tr.selected').removeClass('selected');
+                                $(this).addClass('selected');
+                            }
+                            var goodsid = $(this).children('td:first').text();
+
+                            // var trSelected = $('#pos-layer-table tbody tr.selected');
+                            var trSelected = body.find('#pos-layer-table tbody tr.selected');
+                            if(trSelected){
+                                $.each(trSelected,function(index,val){
+                                    $(val).removeClass('selected');
+                                });
+                            }
+                          layer.close(index);
+                          // 关闭弹出层
+                          //
+                          //prompt层
+                        layer.prompt({
+                            formType: 0,
+                            value: '1',
+                            title: '请输入值数量',
+                            area: ['800px', '350px'], //自定义文本域宽高
+                            yes: function(index, layero){
+                               // alert(layero.find(".layui-layer-input").val());
+                               var number = layero.find(".layui-layer-input").val();
+                               if(! number){
+                                   number = 1;
+                               }
+                               // 确定数量之后,将选中商品添加至,销售列表
+                               if(goodsid){
+                                  $.post("{:url('pos/pos/pos')}",{goodsid:goodsid,number:number},
+                                  function(data){
+                                    // console.log(data);
+                                    $('#pos-table > tbody').html(data);
+                                    // 清空输入框的条码或拼音码
+                                    $('#barcodename').val("");
+
+                                    $('#barcodename').focus();
+
+
+                                      // $('#retail').val(data.);
+                                      // $(data).insertBefore('#pos-table > tbody > tr:last')
+                                  });
+                               }
+                               layer.close(index);
+                            }
+                        });
+                      });
+                    }
+                });
+                // <!-- 结束 弹出层 -->
+            }
+        }
+    };
+</script>
+
+<script type="text/javascript">
+window.onload=function(){
+    setInterval(function(){
+    var date=new Date();
+    var year=date.getFullYear(); //获取当前年份
+    var mon=date.getMonth()+1; //获取当前月份
+    var da=date.getDate(); //获取当前日
+    var day=date.getDay(); //获取当前星期几
+    var h=date.getHours(); //获取小时
+    var m=date.getMinutes(); //获取分钟
+    var s=date.getSeconds(); //获取秒
+    var d = $('#date');
+    d.text('当前时间:'+year+'年'+mon+'月'+da+'日'+'  星期'+day+' '+h+'时'+m+'分'+s +'秒' + '      ');
+    },1000)
+}
+</script>
+</html>
