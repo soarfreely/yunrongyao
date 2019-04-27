@@ -2,13 +2,11 @@
 
 namespace app\pos\model;
 
-use think\Model;
-
 /**
  * 商品模型
  * @package app\admin\model
  */
-class Goods extends Model
+class Goods extends AbstractModel
 {
     // 0-进销,1-只销,2,停销,3-停用
     const GOODS_STATUS_DEFAULT = 0;
@@ -66,7 +64,7 @@ class Goods extends Model
             $where['pinyin'] = ['like', "%$barcodename%"];
         }
 
-        $goodsList = model('Goods')->where($where)->field($field)->select();
+        $goodsList = model('Goods')->where($this->condition)->where($where)->field($field)->select();
         if ($goodsList) {
             foreach ($goodsList as $key => & $value) {
                 $value = $value->toArray();
@@ -94,7 +92,7 @@ class Goods extends Model
 
         $where = ['id' => $goods_id];
 
-        $goodsList = model('Goods')->where($where)->field($field)->select();
+        $goodsList = model('Goods')->where($this->condition)->where($where)->field($field)->select();
         if ($goodsList) {
             foreach ($goodsList as $key => & $value) {
                 $value = $value->toArray();
@@ -120,7 +118,7 @@ class Goods extends Model
         $field = "id,barcode,pinyin,goods,retail_price,category_id";
         $where = ['id' => $goods_id];
 
-        $goods_list = model('Goods')->where($where)->field($field)->find();
+        $goods_list = model('Goods')->where($this->condition)->where($where)->field($field)->find();
 
         return $goods_list ? $goods_list->toArray() : [];
     }

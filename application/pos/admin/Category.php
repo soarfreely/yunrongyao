@@ -4,10 +4,9 @@ namespace app\pos\admin;
 
 use app\common\builder\ZBuilder;
 use app\pos\model\Category as CategoryModel;
-use app\admin\controller\Admin;
 use util\Tree;
 
-class Category extends Admin
+class Category extends AbstractController
 {
     /**
      * 添加

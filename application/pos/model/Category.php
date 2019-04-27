@@ -2,13 +2,11 @@
 
 namespace app\pos\model;
 
-use think\Model;
-
 /**
  * 分类模型
  * @package app\admin\model
  */
-class Category extends Model
+class Category extends AbstractModel
 {
     /**
      * 设置当前模型对应的完整数据表名称
@@ -33,7 +31,11 @@ class Category extends Model
             return [];
         }
 
-        $category_ids = $this::where('parent_id', $id)->column('id');
+        $condition = [
+            $this->condition,
+            'parent_id' => $id,
+        ];
+        $category_ids = $this::where($condition)->column('id');
         if ($category_ids) {
             foreach ($category_ids as $key => $cateId) {
                 $list          = $this->ChildrenCategory($cateId);
