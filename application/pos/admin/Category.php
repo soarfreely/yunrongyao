@@ -56,39 +56,35 @@ class Category extends Admin
     }
 
     /**
-     * list() 方法
-     * @return [type] [description]
+     * index 分类首页
+     * User: <zhangxiang_php@vchangyi.com>
+     * @return mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * Date: 19-4-27 Time: 上午11:46
      */
     public function index()
     {
-
         // 获取节点数据
-        $data_list = CategoryModel::order('sort,categoryid desc')->select();
+        $data_list = CategoryModel::order('sort,id desc')->select();
         if($data_list){
             foreach ($data_list as $key =>& $value) {
-                $value = $value->toArray();
-                // $value['pid'] = $value['parentid'];
-                // $value['id'] = $value['categoryid'];
-                $value['title'] = $value['category'];
                 $value['icon'] = '';
                 $value['url_value'] = '';
                 $value['module'] = '';
                 $value['status'] = 1;
-                // unset($value['parentid']);
-                // unset($value['categoryid']);
-                // unset($value['category']);
             }
         }
+
         $max_level = $this->request->get('max', 0);
-        // $menus = $this->getNestMenu($data_list, $max_level);
-        // print_r(['a'=>$menus]);die;
+
         $this->assign('menus', $this->getNestMenu($data_list, $max_level));
         $this->assign('role_list', []);
         $this->assign('module_list', []);
 
-        // $this->assign('tab_nav', ['tab_list' => $tab_list, 'curr_tab' => '']);
-        $this->assign('page_title', '节点管理');
-        return $this->fetch('category/categorylist');
+        $this->assign('page_title', '分类管理');
+        return $this->fetch('category/index');
     }
     /**
      * 编辑
@@ -182,35 +178,35 @@ class Category extends Admin
         return '<ul>'.$result.'</ul>';
     }
 
-    private function getNestMenu($lists = [], $max_level = 0, $parentid = 0, $curr_level = 1)
+    private function getNestMenu($lists = [], $max_level = 0, $pid = 0, $curr_level = 1)
     {
         $result = '';
         foreach ($lists as $key => $value) {
-            if ($value['parentid'] == $parentid) {
+            if ($value['parent_id'] == $pid) {
                 $disable  = $value['status'] == 0 ? 'dd-disable' : '';
 
                 // 组合节点
-                $result .= '<li class="dd-item dd3-item '.$disable.'" data-id="'.$value['categoryid'].'">';
-                $result .= '<div class="dd-handle dd3-handle">拖拽</div><div class="dd3-content"><i class="'.$value['icon'].'"></i> '.$value['title'];
+                $result .= '<li class="dd-item dd3-item '.$disable.'" data-id="'.$value['id'].'">';
+                $result .= '<div class="dd-handle dd3-handle">拖拽</div><div class="dd3-content"><i class="'.$value['icon'].'"></i> '.$value['category'];
                 if ($value['url_value'] != '') {
                     $result .= '<span class="link"><i class="fa fa-link"></i> '.$value['url_value'].'</span>';
                 }
                 $result .= '<div class="action">';
-                $result .= '<a href="'.url('add', ['module' => $value['module'], 'parentid' => $value['categoryid']]).'" data-toggle="tooltip" data-original-title="新增子节点"><i class="list-icon fa fa-plus fa-fw"></i></a><a href="'.url('edit', ['categoryid' => $value['categoryid']]).'" data-toggle="tooltip" data-original-title="编辑"><i class="list-icon fa fa-pencil fa-fw"></i></a>';
-                // if ($value['status'] == 0) {
-                //     // 启用
-                //     $result .= '<a href="javascript:void(0);" data-ids="'.$value['categoryid'].'" class="enable" data-toggle="tooltip" data-original-title="启用"><i class="list-icon fa fa-check-circle-o fa-fw"></i></a>';
-                // } else {
-                //     // 禁用
-                //     $result .= '<a href="javascript:void(0);" data-ids="'.$value['categoryid'].'" class="disable" data-toggle="tooltip" data-original-title="禁用"><i class="list-icon fa fa-ban fa-fw"></i></a>';
-                // }
-                $result .= '<a href="'.url('delete', ['categoryid' => $value['categoryid'], 'table' => 'admin_menu']).'" data-toggle="tooltip" data-original-title="删除" class="ajax-get confirm"><i class="list-icon fa fa-times fa-fw"></i></a></div>';
+                $result .= '<a href="'.url('add', ['module' => $value['module'], 'parent_id' => $value['id']]).'" data-toggle="tooltip" data-original-title="新增子节点"><i class="list-icon fa fa-plus fa-fw"></i></a><a href="'.url('edit', ['id' => $value['id']]).'" data-toggle="tooltip" data-original-title="编辑"><i class="list-icon fa fa-pencil fa-fw"></i></a>';
+                if ($value['status'] == 0) {
+                    // 启用
+                    $result .= '<a href="javascript:void(0);" data-ids="'.$value['id'].'" class="enable" data-toggle="tooltip" data-original-title="启用"><i class="list-icon fa fa-check-circle-o fa-fw"></i></a>';
+                } else {
+                    // 禁用
+                    $result .= '<a href="javascript:void(0);" data-ids="'.$value['id'].'" class="disable" data-toggle="tooltip" data-original-title="禁用"><i class="list-icon fa fa-ban fa-fw"></i></a>';
+                }
+                $result .= '<a href="'.url('delete', ['id' => $value['id'], 'table' => 'admin_menu']).'" data-toggle="tooltip" data-original-title="删除" class="ajax-get confirm"><i class="list-icon fa fa-times fa-fw"></i></a></div>';
                 $result .= '</div>';
 
                 if ($max_level == 0 || $curr_level != $max_level) {
                     unset($lists[$key]);
                     // 下级节点
-                    $children = $this->getNestMenu($lists, $max_level, $value['categoryid'], $curr_level + 1);
+                    $children = $this->getNestMenu($lists, $max_level, $value['id'], $curr_level + 1);
                     if ($children != '') {
                         $result .= '<ol class="dd-list">'.$children.'</ol>';
                     }

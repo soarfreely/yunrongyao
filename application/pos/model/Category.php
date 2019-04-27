@@ -2,7 +2,6 @@
 namespace app\pos\model;
 
 use think\Model;
-use think\Request;
 
 /**
  * 分类模型
@@ -16,27 +15,27 @@ class Category extends Model
     /**
      * 通过分类id获取该分类的子分类
      * @Author  <362431947@qq.com>
+     * @param integer $id 分类id
      * @Date    2018-08-06
+     * @return array
      * @Version [version]
      */
-    public function ChildrenCategory($categoryid)
+    public function ChildrenCategory($id)
     {
     	$category_list = [];
-    	$categoryid_array = [];
 
-    	if(! $categoryid){
+    	if(! $id){
     		return [];
     	}
 
-		$categoryid_array = $this::where('parentid',$categoryid)->column('categoryid');
-    	if($categoryid_array){
-    		$list = [];
-    		foreach ($categoryid_array as $key => $cateid) {
-    			$list = $this->ChildrenCategory($cateid);
+		$category_ids = $this::where('parent_id',$id)->column('id');
+    	if($category_ids){
+    		foreach ($category_ids as $key => $cateId) {
+    			$list = $this->ChildrenCategory($cateId);
     			$category_list = array_merge($category_list,$list);
     		}
     	}
 
-    	return array_unique(array_merge($categoryid_array,$category_list,[$categoryid]));
+    	return array_unique(array_merge($category_ids,$category_list,[$id]));
     }
 }
