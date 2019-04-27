@@ -8,8 +8,15 @@ namespace app\pos\model;
 
 class AbstractModel extends \think\Model
 {
+    /**
+     * @var array
+     */
     protected $condition = [];
 
+    /**
+     * AbstractModel constructor.
+     * @param array $data
+     */
     public function __construct($data = [])
     {
         $this->condition = $this->basicCondition();
