@@ -13,16 +13,16 @@
                 <th class="column-right_button ">操作<span></span></th>
             </tr>
         </thead>
-{empty name="goodsList"}
+{empty name="goods_list"}
 {else /}
         <tbody>
-            {volist name = "goodsList" id = "goods"}
+            {volist name = "goods_list" id = "goods"}
             <tr class="">
-                <td class=""> {$goods.goodsid}</td>
+                <td class=""> {$goods.id}</td>
                 <td class=""> {$goods.goods}</td>
                 <td class=""> {$goods.barcode}</td>
                 <td class=""> {$goods.specs}</td>
-                <td class=""> {$goods.categoryid}</td>
+                <td class=""> {$goods.category_id}</td>
                 <td class=""> {$goods.retail}</td>
                 <td class=""> {$goods.last}</td>
                 <td class=""> {$goods.area}</td>
@@ -30,18 +30,18 @@
                     <div class="btn-group">
                         <a title="" 
                         icon="glyphicon glyphicon-list-alt" 
-                        class="btn btn-xs btn-default" href="/pos/public/admin.php/pos/goods/detail/goodsid/{$goods.goodsid}.html" tag="detail" data-toggle="tooltip" data-original-title="详情">
+                        class="btn btn-xs btn-default" href="/pos/public/admin.php/pos/goods/detail/id/{$goods.id}.html" tag="detail" data-toggle="tooltip" data-original-title="详情">
                         <i class="glyphicon glyphicon-list-alt"></i>
                         </a>
                                                             
                         <!-- 弹窗打开(1.0.4+)1.0.4版本开始，支持弹窗打开连接，添加class为pop即可 -->
 
                         <a title="" icon="fa fa-pencil" 
-                        class="btn btn-xs btn-default " href="/pos/public/admin.php/pos/goods/edit/goodsid/{$goods.goodsid}.html" target="_self" _tag="edit" data-toggle="tooltip" data-original-title="编辑">
+                        class="btn btn-xs btn-default " href="/pos/public/admin.php/pos/goods/edit/id/{$goods.id}.html" target="_self" _tag="edit" data-toggle="tooltip" data-original-title="编辑">
                             <i class="fa fa-pencil"></i>
                         </a>
 
-                        <a title="" icon="fa fa-times" class="btn btn-xs btn-default ajax-get confirm" href="/pos/public/admin.php/pos/goods/remove/goodsid/{$goods.goodsid}.html" _tag="remove" data-toggle="tooltip" data-original-title="删除">
+                        <a title="" icon="fa fa-times" class="btn btn-xs btn-default ajax-get confirm" href="/pos/public/admin.php/pos/goods/remove/id/{$goods.id}.html" _tag="remove" data-toggle="tooltip" data-original-title="删除">
                             <i class="fa fa-times"></i>
                         </a>
                     </div>

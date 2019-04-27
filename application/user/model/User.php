@@ -121,6 +121,8 @@ class User extends Model
             'nickname'        => $user->nickname,
             'last_login_time' => $user->last_login_time,
             'last_login_ip'   => get_client_ip(1),
+            'company_id'      => $user->company_id,
+            'founder'         => $user->founder,
         );
         session('user_auth', $auth);
         session('user_auth_sign', data_auth_sign($auth));

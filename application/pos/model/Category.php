@@ -1,4 +1,5 @@
 <?php
+
 namespace app\pos\model;
 
 use think\Model;
@@ -9,7 +10,11 @@ use think\Model;
  */
 class Category extends Model
 {
-    // 设置当前模型对应的完整数据表名称
+    /**
+     * 设置当前模型对应的完整数据表名称
+     *
+     * @var string
+     */
     protected $table = '__POS_CATEGORY__';
 
     /**
@@ -22,20 +27,20 @@ class Category extends Model
      */
     public function ChildrenCategory($id)
     {
-    	$category_list = [];
+        $category_list = [];
 
-    	if(! $id){
-    		return [];
-    	}
+        if (!$id) {
+            return [];
+        }
 
-		$category_ids = $this::where('parent_id',$id)->column('id');
-    	if($category_ids){
-    		foreach ($category_ids as $key => $cateId) {
-    			$list = $this->ChildrenCategory($cateId);
-    			$category_list = array_merge($category_list,$list);
-    		}
-    	}
+        $category_ids = $this::where('parent_id', $id)->column('id');
+        if ($category_ids) {
+            foreach ($category_ids as $key => $cateId) {
+                $list          = $this->ChildrenCategory($cateId);
+                $category_list = array_merge($category_list, $list);
+            }
+        }
 
-    	return array_unique(array_merge($category_ids,$category_list,[$id]));
+        return array_unique(array_merge($category_ids, $category_list, [$id]));
     }
 }
