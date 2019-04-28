@@ -5,13 +5,13 @@ CREATE TABLE `yun_pos_category` (
   `parent_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '父级分类id',
   `sort` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '分类排序',
   `company_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '企业id',
-  `user_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '用户id',
+  `uid` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '用户id',
   `create_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '添加时间',
   `update_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '更新时间',
   PRIMARY KEY (`id`),
   KEY `sort` (`sort`),
   KEY `company_id` (`company_id`),
-  KEY `user_id` (`user_id`),
+  KEY `uid` (`uid`),
   KEY `parent_id` (`parent_id`),
   KEY `create_time` (`create_time`),
   KEY `update_time` (`update_time`)
@@ -33,7 +33,7 @@ CREATE TABLE `yun_pos_company` (
   `district` varchar(32) NOT NULL DEFAULT '' COMMENT '区',
   `detail` varchar(128) NOT NULL DEFAULT '' COMMENT '详细地址',
   `status` tinyint(2) unsigned NOT NULL DEFAULT '0' COMMENT '状态 0 默认禁用  1 启用',
-  `user_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '操作员',
+  `uid` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '添加记录uid',
   `create_date` varchar(32) NOT NULL DEFAULT '' COMMENT '添加日期',
   `create_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '添加时间',
   `update_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '修改时间',
@@ -74,7 +74,7 @@ CREATE TABLE `yun_pos_goods` (
   `is_change_price` tinyint(2) unsigned NOT NULL DEFAULT '0' COMMENT '是否允许前台改价',
   `is_limits` tinyint(2) unsigned NOT NULL DEFAULT '0' COMMENT '0表示不限量.零售每单限量',
   `is_delete` tinyint(2) unsigned NOT NULL DEFAULT '0' COMMENT '是否删除 1 删除',
-  `user_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '操作员',
+  `uid` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '操作员',
   `company_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '企业id',
   `create_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '添加时间',
   `update_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '修改时间',
@@ -104,7 +104,7 @@ CREATE TABLE `yun_pos_retail_detail` (
   `pos_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '款台id',
   `store_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '门店id',
   `company_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '企业id',
-  `user_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '操作员',
+  `uid` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '操作员',
   `create_date` varchar(32) NOT NULL DEFAULT '' COMMENT '添加日期',
   `create_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '添加时间',
   `update_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '修改时间',
@@ -113,7 +113,7 @@ CREATE TABLE `yun_pos_retail_detail` (
   KEY `member_id` (`member_id`),
   KEY `company_id` (`company_id`),
   KEY `store_id` (`store_id`),
-  KEY `user_id` (`user_id`),
+  KEY `uid` (`uid`),
   KEY `pos_id` (`pos_id`),
   KEY `create_time` (`create_time`),
   KEY `update_time` (`update_time`),
@@ -131,7 +131,7 @@ CREATE TABLE `yun_pos_retail_money` (
   `pay` decimal(12,3) unsigned NOT NULL DEFAULT '0.000' COMMENT '实付金额',
   `store_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '门店id',
   `company_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '企业id',
-  `user_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '操作员',
+  `uid` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '操作员',
   `pos_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '款台id',
   `create_date` varchar(32) NOT NULL DEFAULT '' COMMENT '添加日期',
   `create_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '添加时间',
@@ -160,7 +160,7 @@ CREATE TABLE `yun_pos_retail_summary` (
   `number` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '商品总数',
   `store_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '门店id',
   `company_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '企业id',
-  `user_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '操作员',
+  `uid` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '操作员',
   `pos_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '款台id',
   `create_date` varchar(32) NOT NULL DEFAULT '' COMMENT '添加日期',
   `create_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '添加时间',
@@ -177,13 +177,13 @@ CREATE TABLE `yun_pos_retail_summary` (
 
 
 
-DROP TABLE IF EXISTS `yun_pos_staff`;
-CREATE TABLE `yun_pos_staff` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `uid` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '用户id',
-  `store_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '门店id',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+-- DROP TABLE IF EXISTS `yun_pos_staff`;
+-- CREATE TABLE `yun_pos_staff` (
+--   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+--   `uid` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '用户id',
+--   `store_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '门店id',
+--   PRIMARY KEY (`id`)
+-- ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
@@ -205,7 +205,7 @@ CREATE TABLE `yun_pos_tmp_retail_detail` (
   `posid` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '款台id',
   `store_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '门店id',
   `company_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '企业id',
-  `user_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '操作员',
+  `uid` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '操作员',
   `create_date` varchar(32) NOT NULL DEFAULT '' COMMENT '添加日期',
   `create_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '添加时间',
   `update_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '修改时间',
@@ -214,7 +214,7 @@ CREATE TABLE `yun_pos_tmp_retail_detail` (
   KEY `member_id` (`member_id`),
   KEY `storeid` (`storeid`),
   KEY `company_id` (`company_id`),
-  KEY `user_id` (`user_id`),
+  KEY `uid` (`uid`),
   KEY `posid` (`posid`),
   KEY `create_time` (`create_time`),
   KEY `update_time` (`update_time`),
@@ -235,7 +235,7 @@ CREATE TABLE `yun_pos_tmp_retail_summary` (
   `number` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '商品总数',
   `store_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '门店id',
   `company_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '企业id',
-  `user_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '操作员',
+  `uid` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '操作员',
   `pos_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '款台id',
   `create_date` varchar(32) NOT NULL DEFAULT '' COMMENT '添加日期',
   `create_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '添加时间',

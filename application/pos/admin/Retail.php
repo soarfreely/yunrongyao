@@ -1,14 +1,12 @@
 <?php
 namespace app\pos\admin;
 
-use app\common\controller\Common;
 use app\common\builder\ZBuilder;
 use think\Db;
-use app\admin\controller\Admin;
 use app\pos\model\RetailDetail;
 
 
-class Retail extends Admin
+class Retail extends AbstractController
 {
     /**
      * 每日收款
@@ -18,14 +16,11 @@ class Retail extends Admin
      */
     public function index()
     {
-        // print_r($this->getMap());die;
-        $companyid = session('user_auth.companyid');
-
         $data_list = model('RetailDetail')
-            ->where('companyid',$companyid)->paginate();
+            ->where($this->condition)->paginate();
         // $data_list = model('RetailDetail')
-        //     ->join('pos_goods pg','mini_pos_retail_detail.goodsid = pg.goodsid AND mini_pos_retail_detail.companyid = pg.companyid')
-        //     ->where('pg.companyid',$companyid)->paginate();
+        //     ->join('pos_goods pg','mini_pos_retail_detail.goodsid = pg.goodsid AND mini_pos_retail_detail.company_id = pg.company_id')
+        //     ->where('pg.company_id',$company_id)->paginate();
 
         return ZBuilder::make('table')
             ->addTimeFilter('create_date', date("Y-m-d"), date("Y-m-d")) // 添加时间段筛选
@@ -58,6 +53,7 @@ class Retail extends Admin
                 ])
             ->fetch(); // 渲染页面
     }
+
     /**
      * 详情
      * @Author  <362431947@qq.com>

@@ -5,7 +5,8 @@
 
 增加 一个系统模块，手动添加；
 2.在后台节点管理，增加一个 顶级节点。
-3.用户登录验证，user模型autoLogin方法，登录凭证信息：
+3.用户登录验证，user模型 autoLogin 方法，登录凭证信息：
+use 表 增加 company_id，founder 字段
        $auth = array(
             'uid'             => $user->id,
             'group'           => $user->group,
@@ -14,10 +15,11 @@
             'avatar'          => $user->avatar,
             'username'        => $user->username,
             'nickname'        => $user->nickname,
-            'companyid'       => $user->companyid,
+            'company_id'       => $user->company_id,
             'founder'         => $user->founder,
             'last_login_time' => $user->last_login_time,
             'last_login_ip'   => get_client_ip(1),
         );
 4.utl 工具类
     gather 收款类；alipayment 支付宝支付类
+

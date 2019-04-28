@@ -169,7 +169,7 @@ class Category extends AbstractController
 
                 // 组合节点
                 $result .= '<li class="dd-item dd3-item ' . $disable . '" data-id="' . $value['id'] . '">';
-                $result .= '<div class="dd-handle dd3-handle">拖拽</div><div class="dd3-content"><i class="' . $value['icon'] . '"></i> ' . $value['category'];
+                $result .= '<div class="dd-handle dd3-handle">拖拽</div><div class="dd3-content"><i class="' . $value['icon'] = '' . '"></i> ' . $value['category'];
                 $result .= '<div class="action">';
 
                 $result .= '<a href="' . url('add', ['parent_id' => $value['id']]) . '" data-toggle="tooltip" data-original-title="新增子节点"><i class="list-icon fa fa-plus fa-fw"></i></a><a href="' . url('edit', ['id' => $value['id']]) . '" data-toggle="tooltip" data-original-title="编辑"><i class="list-icon fa fa-pencil fa-fw"></i></a>';

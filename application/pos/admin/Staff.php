@@ -2,15 +2,15 @@
 
 namespace app\pos\admin;
 
-use app\admin\controller\Admin;
 use app\common\builder\ZBuilder;
 use app\user\model\Role as RoleModel;
 use app\pos\model\Staff as StaffModel;
 use app\user\model\User as UserModel;
+use app\user\model\User;
 use think\Hook;
 use think\Db;
 
-class Staff extends Admin 
+class Staff extends AbstractController
 {
 	 /**
      * 企业员工列表
@@ -23,19 +23,9 @@ class Staff extends Admin
 
         // 获取查询条件
         $map = $this->getMap();
-        // ::where($map)->
-        
-        if(isset($map)){
 
-        }
         // 数据列表
-        // $data_list = $staff->index();//->paginate();
-        $data_list = Db::table('mini_admin_user')
-            ->alias('u')
-            ->join('pos_staff s','u.id = s.uid')
-            ->where($map)
-            // ->order('sort,id desc')
-            ->paginate();
+        $data_list = User::where($this->condition)->where($map)->paginate();
         // 分页数据
         $page = $data_list->render();
 

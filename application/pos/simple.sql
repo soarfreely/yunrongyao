@@ -329,8 +329,8 @@ INSERT INTO mini_pos_company values(1,'国安大药房','国安大药房','1','�
 | status          | tinyint(2)             | NO   |     | 0       |                |
 +-----------------+------------------------+------+-----+---------+----------------+
 
-ALTER TABLE mini_admin_user ADD COLUMN companyid int(11) unsigned NOT NULL DEFAULT 0 comment '企业id' AFTER `group`;
-ALTER TABLE mini_admin_user ADD COLUMN founder tinyint(1) unsigned NOT NULL DEFAULT 0 comment '是否是,企业创建者 默认 0 不是,1是' AFTER `group`;
+ALTER TABLE mini_admin_user ADD COLUMN company_id int(11) unsigned NOT NULL DEFAULT 0 comment '企业id' AFTER `group`;
+ALTER TABLE mini_admin_user ADD COLUMN founder tinyint(1) unsigned NOT NULL DEFAULT 0 comment '是否是,企业创建者 默认0不是,1是' AFTER `group`;
 
 
 INSERT INTO mini_admin_user (id,username,nickname,email,mobile,companyid,create_time) VALUES(
