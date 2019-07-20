@@ -1,4 +1,5 @@
 DROP TABLE IF EXISTS `yun_pos_category`;
+
 CREATE TABLE `yun_pos_category` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '分类id',
   `category` varchar(64) NOT NULL DEFAULT '' COMMENT '分类',
